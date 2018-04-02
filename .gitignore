@@ -2,3 +2,5 @@
 api_key
 .directory
 __pycache__/
+translateApiKey
+dictionaryApiKey

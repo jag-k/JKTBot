@@ -33,6 +33,7 @@ calculator_keyboard = ReplyKeyboardMarkup(calculator_keyboard_list, one_time_key
 # TRANSLATE
 
 translate_keyboard_list = [
+    ["/edit_lang"],
     ["/cancel"]
 ]
 
@@ -45,5 +46,5 @@ remove_kb = ReplyKeyboardRemove()
 
 keyboard_dict = {
     CALCULATOR: calculator_keyboard,
-    TRANSLATE: TRANSLATE
+    TRANSLATE: translate_keyboard
 }

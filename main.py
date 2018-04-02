@@ -10,14 +10,14 @@ def reply_md(update, *args, **kwargs):
 
 def start(bot: telegram.bot.Bot, update: telegram.update.Update):
     message: telegram.message.Message = update.message
-    message.reply_text("Привет, Я — \"многофункциональный\" бот)\nВыберите функцию:\n    %s" % '\n    '.join(functions),
+    message.reply_text("Привет, Я — \"многофункциональный\" бот)\n" + functions_str,
                        reply_markup=start_keyboard)
     return 0
 
 
 def cancel(bot: telegram.bot.Bot, update: telegram.update.Update):
     message: telegram.message.Message = update.message
-    message.reply_text("Выберите функцию:\n    %s" % '\n    '.join(functions), reply_markup=start_keyboard)
+    message.reply_text(functions_str, reply_markup=start_keyboard)
     return START
 
 
@@ -50,7 +50,10 @@ def main():
         entry_points=[CommandHandler("start", start)],
         states={
             START: [MessageHandler(Filters.text, select_function, pass_user_data=True)],
-            CALCULATOR: [MessageHandler(Filters.text, calculate_function, pass_user_data=True)]
+            CALCULATOR: [MessageHandler(Filters.text, calculate_function, pass_user_data=True)],
+            TRANSLATE: [MessageHandler(Filters.text, translate_function, pass_user_data=True),
+                        CommandHandler('edit_lang', edit_lang, pass_user_data=True)],
+            TRANSPORT: [MessageHandler(Filters.location, locations, pass_user_data=True)]
         },
         fallbacks=[cancel_handler]
     )
