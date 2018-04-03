@@ -9,34 +9,39 @@ def reply_md(update, *args, **kwargs):
 
 
 def start(bot: telegram.bot.Bot, update: telegram.update.Update):
-    message: telegram.message.Message = update.message
+    message = update.message
     message.reply_text("Привет, Я — \"многофункциональный\" бот)\n" + functions_str,
                        reply_markup=start_keyboard)
     return 0
 
 
 def cancel(bot: telegram.bot.Bot, update: telegram.update.Update):
-    message: telegram.message.Message = update.message
+    message = update.message
     message.reply_text(functions_str, reply_markup=start_keyboard)
     return START
 
 
-def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_data):
-    message: telegram.message.Message = update.message
+def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
+    message = update.message
     text = message.text.strip()
     if text in functions:
-        index = functions.index(text) + 1
+        index = functions.index(text)
 
         if "tr" not in user_data:
             user_data['tr'] = {"from": "ru", "to": "en"}
         if "calc" not in user_data:
             user_data['calc'] = ''
 
-        message.reply_text("Включена функция: %s\n\nДля выхода из данной функции введите команду /cancel" %
-                           functions[index-1],
-                           reply_markup=(keyboard_dict[index] if index in keyboard_dict else remove_kb))
+        function_index = index + 1
 
-        return index
+        annotation = "\nПримечание: %s\n" % ANNOTATION[function_index] if function_index in ANNOTATION else ""
+        markup = keyboard_dict[function_index] if function_index in keyboard_dict else remove_kb
+        
+        message.reply_text("Включена функция: %s\n%s\nДля выхода из данной функции введите команду /cancel" %
+                           (functions[index], annotation),
+                           reply_markup=markup)
+
+        return index + 1
 
 
 def main():
@@ -50,7 +55,8 @@ def main():
         entry_points=[CommandHandler("start", start)],
         states={
             START: [MessageHandler(Filters.text, select_function, pass_user_data=True)],
-            CALCULATOR: [MessageHandler(Filters.text, calculate_function, pass_user_data=True)],
+            CALCULATOR: [MessageHandler(Filters.text, calculate_function, pass_user_data=True),
+                         MessageHandler(Filters.command, calculate_function, pass_user_data=True)],
             TRANSLATE: [MessageHandler(Filters.text, translate_function, pass_user_data=True),
                         CommandHandler('edit_lang', edit_lang, pass_user_data=True)],
             TRANSPORT: [MessageHandler(Filters.location, locations, pass_user_data=True)]
