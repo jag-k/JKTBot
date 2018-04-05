@@ -131,10 +131,14 @@ def test_smart_transport(function_index: int, message: telegram.message.Message,
 
 def string_driver_data(driver_data):
     data = (
-        driver_data['rnum'], get_gos_num(driver_data['vehid']), driver_data["where"], driver_data['lastst'],
+        driver_data['rnum'], get_gos_num(driver_data['vehid']),
+        driver_data['lastst'], driver_data["where"],
         string_arrival_time(driver_data['arrt'])
     )
-    return '  ● %s (%s):\n   Сейчас на остановке: "%s"\n   Конечная: "%s"\n\n    Время прибытия: %s' % data
+    return '  ● %s (гос. номер: %s):' \
+           '\n   Сейчас на остановке: "%s"' \
+           '\n   Конечная: "%s"' \
+           '\n\n    Время прибытия: %s' % data
 
 
 @oops_error
@@ -159,7 +163,7 @@ def get_timetable(bot: telegram.bot.Bot, update: telegram.update.Update, user_da
                 r(trolleybuses))
 
         res = ('Расписание остановки "%s" (%s) на данный момент:'
-               '\nМаршрутки:\n%s'
+               '\n\nМаршрутки:\n%s'
                '\n\n\nАвтобусы:\n%s'
                '\n\n\nТроллейбусы:\n%s' % data).replace("    Пока никто не едет...\n\n\n",
                                                         "    Пока никто не едет...\n\n")
