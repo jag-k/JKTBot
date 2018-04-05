@@ -39,6 +39,22 @@ translate_keyboard_list = [
 
 translate_keyboard = ReplyKeyboardMarkup(translate_keyboard_list)
 
+# SMART_TRANSPORT
+
+TIMETABLE_STING = "Расписание"
+transport_keyboard_list = [
+    [TIMETABLE_STING, '/edit_location'],
+    ['/cancel']
+]
+
+get_location_keyboard_list = [
+    ["/cancel"]
+]
+
+get_location_keyboard = ReplyKeyboardMarkup(get_location_keyboard_list, True)
+
+smart_transport_keyboard = ReplyKeyboardMarkup(transport_keyboard_list, one_time_keyboard=False)
+
 # Remove
 remove_kb = ReplyKeyboardRemove()
 
@@ -46,5 +62,7 @@ remove_kb = ReplyKeyboardRemove()
 
 keyboard_dict = {
     CALCULATOR: calculator_keyboard,
-    TRANSLATE: translate_keyboard
+    TRANSLATE: translate_keyboard,
+    SMART_TRANSPORT: smart_transport_keyboard,
+    GET_LOCATION: get_location_keyboard
 }

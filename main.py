@@ -1,5 +1,4 @@
 from telegram.ext import Updater, MessageHandler, Filters, CommandHandler, ConversationHandler, RegexHandler
-from reply_keyboards import *
 from functions import *
 
 
@@ -21,6 +20,7 @@ def cancel(bot: telegram.bot.Bot, update: telegram.update.Update):
     return START
 
 
+@oops_error
 def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
     message: telegram.message.Message = update.message
     text = message.text.strip()
@@ -61,7 +61,8 @@ def main():
                          MessageHandler(Filters.command, calculate_function, pass_user_data=True)],
             TRANSLATE: [MessageHandler(Filters.text, translate_function, pass_user_data=True),
                         CommandHandler('edit_lang', edit_lang, pass_user_data=True)],
-            SMART_TRANSPORT: [MessageHandler(Filters.location, get_locations, pass_user_data=True)],
+            SMART_TRANSPORT: [MessageHandler(Filters.text, get_timetable, pass_user_data=True),
+                              CommandHandler("edit_location", edit_location)],
 
             GET_LOCATION: [MessageHandler(Filters.location, get_locations, pass_user_data=True),
                            MessageHandler(Filters.text, get_locations, pass_user_data=True)]

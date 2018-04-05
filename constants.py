@@ -6,6 +6,9 @@ TRANSLATE = 2
 SMART_TRANSPORT = 3
 GET_LOCATION = 4
 
+EDIT_LOCATION_STRING = "введите адресс, где Вы сейчас находитесь (например: Пенза, Центральная 1в) " \
+                       "или просто пришлите свою геолокацию, если Вы используете Telegram на телефоне."
+
 UI = "ru"
 
 ANNOTATION = {
@@ -19,14 +22,16 @@ ANNOTATION = {
     SMART_TRANSPORT: "Функция пока не доступна…"
 }
 
-URLS = {
-    "geocode": "http://geocode-maps.yandex.ru/1.x/",
-    "static": "https://static-maps.yandex.ru/1.x/",
-    "search": "https://search-maps.yandex.ru/v1/"
-}
 
 GEOCODE = 'geocode'
 STATIC = 'static'
 SEARCH = 'search'
+
+URLS = {
+    GEOCODE: "http://geocode-maps.yandex.ru/1.x/",
+    STATIC: "https://static-maps.yandex.ru/1.x/",
+    SEARCH: "https://search-maps.yandex.ru/v1/"
+}
+
 API_KEY = open('mapsApiKey', 'r').read()
 
