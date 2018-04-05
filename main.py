@@ -9,20 +9,20 @@ def reply_md(update, *args, **kwargs):
 
 
 def start(bot: telegram.bot.Bot, update: telegram.update.Update):
-    message = update.message
+    message: telegram.message.Message = update.message
     message.reply_text("Привет, Я — \"многофункциональный\" бот)\n" + functions_str,
                        reply_markup=start_keyboard)
     return 0
 
 
 def cancel(bot: telegram.bot.Bot, update: telegram.update.Update):
-    message = update.message
+    message: telegram.message.Message = update.message
     message.reply_text(functions_str, reply_markup=start_keyboard)
     return START
 
 
 def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
-    message = update.message
+    message: telegram.message.Message = update.message
     text = message.text.strip()
     if text in functions:
         index = functions.index(text)
@@ -31,6 +31,8 @@ def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_
             user_data['tr'] = {"from": "ru", "to": "en"}
         if "calc" not in user_data:
             user_data['calc'] = ''
+        if "stop" not in user_data:
+            user_data['stop'] = None
 
         function_index = index + 1
 
@@ -41,7 +43,7 @@ def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_
                            (functions[index], annotation),
                            reply_markup=markup)
 
-        return index + 1
+        return test_smart_transport(function_index, message, user_data)
 
 
 def main():
@@ -59,7 +61,11 @@ def main():
                          MessageHandler(Filters.command, calculate_function, pass_user_data=True)],
             TRANSLATE: [MessageHandler(Filters.text, translate_function, pass_user_data=True),
                         CommandHandler('edit_lang', edit_lang, pass_user_data=True)],
-            TRANSPORT: [MessageHandler(Filters.location, locations, pass_user_data=True)]
+            SMART_TRANSPORT: [MessageHandler(Filters.location, get_locations, pass_user_data=True)],
+
+            GET_LOCATION: [MessageHandler(Filters.location, get_locations, pass_user_data=True),
+                           MessageHandler(Filters.text, get_locations, pass_user_data=True)]
+
         },
         fallbacks=[cancel_handler]
     )

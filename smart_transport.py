@@ -1,7 +1,10 @@
 import requests
+from math import fabs
+
+CITY = "penza"
 
 
-def get_zones(city="penza"):
+def get_zones(city=CITY):
     params = {
         "city": city
     }
@@ -11,7 +14,7 @@ def get_zones(city="penza"):
         return data.json() if data.text != "Ошибка соединения: " else []
 
 
-def get_rdata(rid=None, long0=0, lat0=0, long1=180, lat1=90, curk=0, city="penza"):
+def get_rdata(rid=None, long0=0, lat0=0, long1=180, lat1=90, curk=0, city=CITY):
     rids = filter(lambda x: x, map(lambda x: x['routes_ids'] if "routes_ids" in x else '', get_zones(city)))
     params = {
         "city": city,
@@ -32,16 +35,20 @@ def get_rdata(rid=None, long0=0, lat0=0, long1=180, lat1=90, curk=0, city="penza
         return data
 
 
-def get_stations(city="penza"):
+def get_stations(city=CITY):
     params = {
         "city": city
     }
     data = requests.get("https://58bus.ru/php/getStations.php?", params)
     if data:
-        return data.json() if data.text != "Ошибка соединения: " else []
+        data = data.json() if data.text != "Ошибка соединения: " else []
+        for i in range(len(data)):
+            data[i]['lat'] = data[i]['lat'] / 1000000
+            data[i]['lng'] = data[i]['lng'] / 1000000
+        return data
 
 
-def get_station_forecasts(station_id, type=0, city="penza"):
+def get_station_forecasts(station_id, type=0, city=CITY):
     params = {
         "sid": station_id,
         "city": city,
@@ -51,6 +58,10 @@ def get_station_forecasts(station_id, type=0, city="penza"):
     data = requests.get("http://58bus.ru/php/getStationForecasts.php?", params)
     if data:
         return data.json() if data.text != "Ошибка соединения: " else []
+
+
+def get_nearest_stop(long, lat, city=CITY):
+    return min(get_stations(city), key=lambda x: fabs(x['lng'] - long)+fabs(x['lat'] - lat))
 
 
 if __name__ == '__main__':

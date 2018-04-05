@@ -1,13 +1,16 @@
 import telegram
 from reply_keyboards import flat_keyboard, calculator_keyboard_list
-from constants import *
 from translate2 import translate, get_support_langs
 from reply_keyboards import functions
+from yandex_map_api import *
+from smart_transport import *
 
 
 __calculate_symbols__ = flat_keyboard(calculator_keyboard_list)
 functions_str = "Выберите функцию:\n ● %s" % '\n ● '.join(functions)
 
+
+# CALCULATOR
 
 def calculate_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
     message = update.message
@@ -38,6 +41,8 @@ def calculate_function(bot: telegram.bot.Bot, update: telegram.update.Update, us
         user_data['calc'] = ''
         return CALCULATOR
 
+
+# TRANSLATE
 
 def translate_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
     message = update.message
@@ -79,7 +84,36 @@ def edit_lang(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: 
     return
 
 
-def locations(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
-    message = update.message
-    print("Locations:", message.location, message.from_user)
-    return START
+# SMART_TRANSPORT
+
+def get_locations(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
+    message: telegram.message.Message = update.message
+    print("Locations:", message.location, message.text, message.from_user)
+    if message.location:
+        locations = message.location['longitude'], message.location['latitude']
+    else:
+        try:
+            locations = get_coord(message.text)
+        except Exception as err:
+            print(ERROR_STRING % (type(err).__name__, err))
+            message.reply_text("Возможно, Вы ввели неправильный адрес, пожалуйста, попробуйте ещё раз")
+            return
+    user_data["stop"] = get_nearest_stop(*locations)
+    stop = user_data['stop']
+    pprint(stop)
+    try:
+        url = URLS[STATIC] + '?l=sat,skl&z=16&pt=' + create_point(stop['lng'], stop['lat'], "comma", '', '')
+        text = "Ближайшая к Вам остановка это \"%s\" (%s)" % (stop['name'], stop['descr'])
+        message.reply_photo(url, text)
+    except Exception as err:
+        print(ERROR_STRING % (type(err).__name__, err), err.args)
+        message.reply_text("Упс... Что-то пошло не так, пожалуйста, повторите попытку)")
+    return SMART_TRANSPORT
+
+
+def test_smart_transport(function_index: int, message: telegram.message.Message, user_data: dict):
+    if function_index == SMART_TRANSPORT:
+        if not user_data['stop']:
+            message.reply_text("Вы пока не устанавливали свою локацию. Сделайте это прямо сейчас")
+            return GET_LOCATION
+    return function_index
