@@ -35,3 +35,5 @@ URLS = {
 
 API_KEY = open('mapsApiKey', 'r').read()
 
+QUESTION_STRING = "По всем вопросам обращатся к @Jag_k в Telegram (https://t.me/Jag_k) " \
+                  "или в ВК (https://vk.com/jag_k58)"

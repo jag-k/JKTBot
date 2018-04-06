@@ -65,7 +65,6 @@ def oops_error(function_to_decorate):
             print(ERROR_STRING % (type(err).__name__, err), "\nFunctions: %s\n\n" %
                   function_to_decorate.__name__)
             if len(args) >= 2:
-                args[1].message.reply_text("Упс… Что-то пошло не так, пожалуйста, повторите попытку)\n\n"
-                                           "По всем вопросам обращатся к @Jag_k в Telegram (https://t.me/Jag_k)"
-                                           "или в ВК (https://vk.com/jag_k58)")
+                args[1].message.reply_text("Упс… Что-то пошло не так, пожалуйста, повторите попытку)\n\n" +
+                                           QUESTION_STRING)
     return decoration

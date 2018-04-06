@@ -9,7 +9,9 @@ def reply_md(update, *args, **kwargs):
 
 def start(bot: telegram.bot.Bot, update: telegram.update.Update):
     message: telegram.message.Message = update.message
-    message.reply_text("Привет, Я — \"многофункциональный\" бот)\n" + functions_str,
+    message.reply_text("Привет, Я — \"многофункциональный\" бот)\n%s\n\n"
+                       "P.S.: Если бот перестал реагировать, попробуйте прописать комманду /start. "
+                       "Возможно, бота просто перезагружали.\n\n%s" % (functions_str, QUESTION_STRING),
                        reply_markup=start_keyboard)
     return 0
 
@@ -46,9 +48,18 @@ def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_
         return test_smart_transport(function_index, message, user_data)
 
 
-def main():
-    updater = Updater(open("api_key").read())
+@oops_error
+def stop_bot(bot: telegram.bot.Bot, update: telegram.update.Update):
+    message: telegram.message.Message = update.message
+    if message.from_user['id'] == 241440713:
+        message.reply_text("Выключаюсь…", reply_markup=remove_kb)
+        updater.stop()
+        sys.exit()
+    else:
+        message.reply_text("У Вас недостаточно прав")
 
+
+def main():
     dp = updater.dispatcher
 
     cancel_handler = CommandHandler("cancel", cancel)
@@ -68,7 +79,7 @@ def main():
                            MessageHandler(Filters.text, get_locations, pass_user_data=True)]
 
         },
-        fallbacks=[cancel_handler]
+        fallbacks=[cancel_handler, CommandHandler('off', stop_bot)]
     )
 
     dp.add_handler(conv_handler)
@@ -83,4 +94,5 @@ def main():
 
 
 if __name__ == '__main__':
+    updater = Updater(open("api_key").read())
     main()
