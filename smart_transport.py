@@ -70,7 +70,7 @@ def get_gos_num(driver_id):
 
 
 def string_arrival_time(arrt, minus=10):
-    return ("~%s мин." % (arrt // 60)) if arrt <= 60 else (">1 минуты" if arrt >= minus else "почти на месте…")
+    return ("~%s мин." % (arrt // 60)) if arrt >= 60 else ("меньше минуты…" if arrt <= minus else "почти на месте…")
 
 
 def station_filter(station_data: list, sorted_key=(lambda x: x)):
@@ -81,7 +81,7 @@ def station_filter(station_data: list, sorted_key=(lambda x: x)):
     }
     new_data = []
     for i in range(len(station_data)):
-        station: dict = station_data[i]
+        station = station_data[i]
         if station['rnum'] in data[station['rtype']]:
             arrt, index = data[station['rtype']][station['rnum']]
             if arrt > station['arrt']:

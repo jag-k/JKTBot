@@ -1,3 +1,4 @@
+import printLog
 START = 0
 CALCULATOR = 1
 TRANSLATE = 2
@@ -37,3 +38,5 @@ API_KEY = open('api_keys/mapsApiKey', 'r').read()
 
 QUESTION_STRING = "По всем вопросам обращатся к @Jag_k в Telegram (https://t.me/Jag_k) " \
                   "или в ВК (https://vk.com/jag_k58)"
+
+print_log = printLog.PrintLog()

@@ -58,13 +58,11 @@ if 'win' in sys.platform:
 
 
 def oops_error(function_to_decorate):
-    def decoration(*args, **kwargs):
+    def decoration(bot, update, *args, **kwargs):
         try:
-            return function_to_decorate(*args, **kwargs)
+            return function_to_decorate(bot, update, *args, **kwargs)
         except Exception as err:
             print(ERROR_STRING % (type(err).__name__, err), "\nFunctions: %s\n\n" %
                   function_to_decorate.__name__)
-            if len(args) >= 2:
-                args[1].message.reply_text("Упс… Что-то пошло не так, пожалуйста, повторите попытку)\n\n" +
-                                           QUESTION_STRING)
+            update.message.reply_text("Упс… Что-то пошло не так, пожалуйста, повторите попытку)\n\n" + QUESTION_STRING)
     return decoration

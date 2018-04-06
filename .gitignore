@@ -2,3 +2,4 @@
 api_keys/
 .directory
 __pycache__/
+.logs/

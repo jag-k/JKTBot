@@ -17,7 +17,7 @@ def calculate_function(bot: telegram.bot.Bot, update: telegram.update.Update, us
     message = update.message
     if message.text == "/cancel":
         return START
-    print("Calculate:", message.text, message.from_user)
+    print_log("Calculate:", message.text, message.from_user)
     text = message.text.strip()
     for i in text:
         if i not in __calculate_symbols__:
@@ -48,11 +48,12 @@ def calculate_function(bot: telegram.bot.Bot, update: telegram.update.Update, us
 @oops_error
 def translate_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
     message = update.message
-    print("Translate:", message.text, message.from_user)
+    print_log("Translate:", message.text, message.from_user)
 
     tr = translate(message.text, user_data['tr']['to'])
-    res = "Перевод (%s): %s" % (tr['lang'], tr['text'])
-    print(res)
+    res = "Перевод (%s): %s\n\n" \
+          "Переведено сервисом «Яндекс.Переводчик» (http://translate.yandex.ru/)" % (tr['lang'], tr['text'])
+    print_log(res)
     message.reply_text(res)
     return TRANSLATE
 
@@ -91,15 +92,15 @@ def edit_lang(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: 
 
 @oops_error
 def get_locations(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
-    message: telegram.message.Message = update.message
-    print("Locations:", message.location, message.text, message.from_user)
+    message = update.message
+    print_log("Locations:", message.location, message.text, message.from_user)
     if message.location:
         locations = message.location['longitude'], message.location['latitude']
     else:
         try:
             locations = get_coord(message.text)
         except Exception as err:
-            print(ERROR_STRING % (type(err).__name__, err))
+            print_log(ERROR_STRING % (type(err).__name__, err))
             message.reply_text("Возможно, Вы ввели неправильный адрес, пожалуйста, попробуйте ещё раз")
             return
     user_data["stop"] = get_nearest_stop(*locations)
@@ -114,7 +115,7 @@ def get_locations(bot: telegram.bot.Bot, update: telegram.update.Update, user_da
 
 @oops_error
 def edit_location(bot: telegram.bot.Bot, update: telegram.update.Update):
-    message: telegram.message.Message = update.message
+    message = update.message
     message.reply_text(EDIT_LOCATION_STRING.capitalize(), reply_markup=get_location_keyboard)
     return GET_LOCATION
 
@@ -143,7 +144,7 @@ def string_driver_data(driver_data):
 
 @oops_error
 def get_timetable(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
-    message: telegram.message.Message = update.message
+    message = update.message
     r_types = ["М", "А", "Т"]
     if message.text == TIMETABLE_STING:
         message.reply_text('Подождите секундочку…')

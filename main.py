@@ -1,4 +1,4 @@
-from telegram.ext import Updater, MessageHandler, Filters, CommandHandler, ConversationHandler, RegexHandler
+from telegram.ext import Updater, MessageHandler, Filters, CommandHandler, ConversationHandler
 from functions import *
 
 
@@ -8,7 +8,7 @@ def reply_md(update, *args, **kwargs):
 
 
 def start(bot: telegram.bot.Bot, update: telegram.update.Update):
-    message: telegram.message.Message = update.message
+    message = update.message
     message.reply_text("Привет, Я — \"многофункциональный\" бот)\n%s\n\n"
                        "P.S.: Если бот перестал реагировать, попробуйте прописать комманду /start. "
                        "Возможно, бота просто перезагружали.\n\n%s" % (functions_str, QUESTION_STRING),
@@ -17,14 +17,14 @@ def start(bot: telegram.bot.Bot, update: telegram.update.Update):
 
 
 def cancel(bot: telegram.bot.Bot, update: telegram.update.Update):
-    message: telegram.message.Message = update.message
+    message = update.message
     message.reply_text(functions_str, reply_markup=start_keyboard)
     return START
 
 
 @oops_error
 def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
-    message: telegram.message.Message = update.message
+    message = update.message
     text = message.text.strip()
     if text in functions:
         index = functions.index(text)
@@ -50,7 +50,7 @@ def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_
 
 @oops_error
 def stop_bot(bot: telegram.bot.Bot, update: telegram.update.Update):
-    message: telegram.message.Message = update.message
+    message = update.message
     if message.from_user['id'] == 241440713:
         message.reply_text("Выключаюсь…", reply_markup=remove_kb)
         updater.stop()
@@ -85,12 +85,12 @@ def main():
     dp.add_handler(conv_handler)
 
     # Запускаем цикл приема и обработки сообщений.
-    print("Bot started…")
+    print_log("Bot started…")
     updater.start_polling()
 
     # Ждем завершения приложения. (например, получение сигнала SIG_TERM при нажатии клавиш Ctrl+C)
     updater.idle()
-    print('Mission complete!)')
+    print_log('Mission complete!)')
 
 
 if __name__ == '__main__':
