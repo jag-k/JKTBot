@@ -94,5 +94,5 @@ def main():
 
 
 if __name__ == '__main__':
-    updater = Updater(open("api_key").read())
+    updater = Updater(open("api_keys/api_key").read())
     main()

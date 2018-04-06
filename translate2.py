@@ -1,6 +1,6 @@
 import requests
 
-__api_key__ = open("translateApiKey").read()  # https://translate.yandex.ru/developers/keys
+__api_key__ = open("api_keys/translateApiKey").read()  # https://translate.yandex.ru/developers/keys
 
 
 def translate(text, to_lang, from_lang=None, api_key=__api_key__):

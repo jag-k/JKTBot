@@ -1,7 +1,4 @@
 .idea/
-api_key
+api_keys/
 .directory
 __pycache__/
-translateApiKey
-dictionaryApiKey
-mapsApiKey

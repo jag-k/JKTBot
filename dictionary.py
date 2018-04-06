@@ -1,7 +1,7 @@
 import requests
 
 __url__ = 'https://dictionary.yandex.net/api/v1/dicservice.json/lookup?'  # key=API-ключ&lang=en-ru&text=time
-__api_key__ = open('dictionaryApiKey').read()
+__api_key__ = open('api_keys/dictionaryApiKey').read()
 
 
 def get_dict(text, from_lang, to_lang=None, ui='ru', api_key=__api_key__):
