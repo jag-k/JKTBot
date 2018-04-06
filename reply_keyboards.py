@@ -8,13 +8,16 @@ def flat_keyboard(kb):
 
 # START
 
+HUMOR = '"Шутки юмора" от Tproger.ru))'
+
 start_keyboard_list = [
     ['Калькулятор', 'Переводчик'],
-    ['"Умный транспорт" (βeta)']  # αlpha βeta
+    ['"Умный транспорт" (βeta)', HUMOR],  # αlpha βeta
+    ["/about", "/help"]
 ]
 
 
-functions = flat_keyboard(start_keyboard_list)
+functions = list(filter(lambda x: x[0] != '/', flat_keyboard(start_keyboard_list)))
 start_keyboard = ReplyKeyboardMarkup(start_keyboard_list)
 
 
@@ -66,3 +69,16 @@ keyboard_dict = {
     SMART_TRANSPORT: smart_transport_keyboard,
     GET_LOCATION: get_location_keyboard
 }
+
+HELP_STRING = """У бота на данный момент есть нескольколько функций:
+    ● Калькулятор: Обычный калькулятор с специальной клавиатурой. %s
+
+    ● Переводчик: %s
+
+    ● "Умный транспорт": %s
+
+    ● %s: Выводит шутку с сайта tproger.ru (ВНИМАНИЕ: ШУТКИ ДЛЯ ПРОГРАММИСТОВ)
+
+   %s
+
+Ссылка на GihHub: https://github.com/jag-k/JKTBot""" % tuple(list(ANNOTATION.values()) + [HUMOR, QUESTION_STRING])

@@ -3,7 +3,6 @@ from translate2 import translate, get_support_langs
 from yandex_map_api import *
 from smart_transport import *
 from reply_keyboards import *
-import requests
 
 
 __calculate_symbols__ = flat_keyboard(calculator_keyboard_list)
@@ -177,3 +176,23 @@ def get_timetable(bot: telegram.bot.Bot, update: telegram.update.Update, user_da
             message.reply_text(res, reply_markup=smart_transport_keyboard)
 
         return SMART_TRANSPORT
+
+
+# ABOUT and HELP
+
+@oops_error
+def about(bot: telegram.bot.Bot, update: telegram.update.Update):
+    message: telegram.message.Message = update.message
+    message.reply_text(ABOUT_STRING, reply_markup=start_keyboard)
+
+
+@oops_error
+def help_func(bot: telegram.bot.Bot, update: telegram.update.Update):
+    message: telegram.message.Message = update.message
+    message.reply_text(HELP_STRING, reply_markup=start_keyboard)
+
+
+ANSWERS = {
+    HUMOR: lambda update: update.message.reply_text(
+        get_request("https://tproger.ru/wp-content/plugins/citation-widget/get-quote.php").text)
+}

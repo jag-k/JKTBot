@@ -38,9 +38,14 @@ def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_
 
         function_index = index + 1
 
+        if text in ANSWERS:
+            t = ANSWERS[text](update)
+            # print_log(t)
+            return t
+
         annotation = "\nПримечание: %s\n" % ANNOTATION[function_index] if function_index in ANNOTATION else ""
         markup = keyboard_dict[function_index] if function_index in keyboard_dict else remove_kb
-        
+
         message.reply_text("Включена функция: %s\n%s\nДля выхода из данной функции введите команду /cancel" %
                            (functions[index], annotation),
                            reply_markup=markup)
@@ -67,7 +72,8 @@ def main():
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start)],
         states={
-            START: [MessageHandler(Filters.text, select_function, pass_user_data=True)],
+            START: [MessageHandler(Filters.text, select_function, pass_user_data=True),
+                    CommandHandler("about", about), CommandHandler("help", help_func)],
             CALCULATOR: [MessageHandler(Filters.text, calculate_function, pass_user_data=True),
                          MessageHandler(Filters.command, calculate_function, pass_user_data=True)],
             TRANSLATE: [MessageHandler(Filters.text, translate_function, pass_user_data=True),
@@ -76,7 +82,7 @@ def main():
                               CommandHandler("edit_location", edit_location)],
 
             GET_LOCATION: [MessageHandler(Filters.location, get_locations, pass_user_data=True),
-                           MessageHandler(Filters.text, get_locations, pass_user_data=True)]
+                           MessageHandler(Filters.text, get_locations, pass_user_data=True)],
 
         },
         fallbacks=[cancel_handler, CommandHandler('off', stop_bot)]
