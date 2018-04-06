@@ -32,7 +32,7 @@ def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_
         if "tr" not in user_data:
             user_data['tr'] = {"from": "ru", "to": "en"}
         if "calc" not in user_data:
-            user_data['calc'] = ''
+            user_data['calc'] = ['']
         if "stop" not in user_data:
             user_data['stop'] = None
 

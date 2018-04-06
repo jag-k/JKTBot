@@ -22,24 +22,49 @@ def calculate_function(bot: telegram.bot.Bot, update: telegram.update.Update, us
         if i not in __calculate_symbols__:
             return
 
-    answer_str = "Ответ: %s"
-    if len(text) == 1:
-        if text != '=':
-            user_data['calc'] += text
-        else:
-            answer = float(eval(user_data['calc']))
-            answer = int(answer) if answer.is_integer() else answer
+    def calculate(t):
+        while t and not t[0].isdigit():
+            t = t[1:]
 
-            message.reply_text(answer_str % answer)
-            user_data['calc'] = ''
-            return CALCULATOR
-    else:
-        answer = float(eval(text.strip('=')))
+        print_log(t)
+        answer = float(eval(t))
         answer = int(answer) if answer.is_integer() else answer
 
-        message.reply_text(answer_str % answer)
-        user_data['calc'] = ''
-        return CALCULATOR
+        message.reply_text(answer_str % (t, answer))
+        user_data['calc'] = ['']
+
+    answer_str = "Ответ: %s=%s"
+    try:
+        if len(text) == 1:
+            if text != '=':
+                if text.isdigit() or text == '.':
+                    if user_data['calc'][-1].replace('.', '').isdigit():
+                        if len(user_data['calc'][-1].replace('.', '')) < 8 and user_data['calc'][-1].count('.') <= 1:
+                            user_data['calc'][-1] += text
+                        else:
+                            raise SyntaxError
+                    else:
+                        user_data['calc'].append(text)
+                else:
+                    if not user_data['calc'][-1].replace('.', '').isdigit():
+                        user_data['calc'][-1] = text
+                    else:
+                        user_data['calc'].append(text)
+
+            else:
+                t = ''.join(user_data['calc'])
+                return calculate(t)
+        else:
+            t = text.strip('=')
+            return calculate(t)
+    except ZeroDivisionError:
+        message.reply_text("Похоже, в Ваших вычислениях допущенна ошибка, пожалуйста, повторите попытку)")
+        return
+
+    except SyntaxError:
+        message.reply_text("Похоже, в Ваших вычислениях допущенна ошибка, пожалуйста, повторите попытку)\n\n"
+                           "Скорее всего, Вы пытаетесь ввести число длиной, больше 8 (длина без учёта точки)")
+        return
 
 
 # TRANSLATE
