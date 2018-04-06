@@ -26,6 +26,9 @@ def calculate_function(bot: telegram.bot.Bot, update: telegram.update.Update, us
         while t and not t[0].isdigit():
             t = t[1:]
 
+        if len(t) > 80:
+            raise SyntaxError
+
         print_log(t)
         answer = float(eval(t))
         answer = int(answer) if answer.is_integer() else answer
@@ -63,7 +66,8 @@ def calculate_function(bot: telegram.bot.Bot, update: telegram.update.Update, us
 
     except SyntaxError:
         message.reply_text("Похоже, в Ваших вычислениях допущенна ошибка, пожалуйста, повторите попытку)\n\n"
-                           "Скорее всего, Вы пытаетесь ввести число длиной, больше 8 (длина без учёта точки)")
+                           "Скорее всего, Вы пытаетесь ввести число длиной, больше 8 (длина без учёта точки)"
+                           " или Вы привысили лимит по колличеству символов (80 символов)")
         return
 
 
