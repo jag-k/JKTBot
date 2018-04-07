@@ -9,13 +9,19 @@ __calculate_symbols__ = flat_keyboard(calculator_keyboard_list)
 functions_str = "Выберите функцию:\n ● %s" % '\n ● '.join(functions)
 
 
+def cancel(bot: telegram.bot.Bot, update: telegram.update.Update):
+    message = update.message
+    message.reply_text(functions_str, reply_markup=start_keyboard)
+    return START
+
+
 # CALCULATOR
 
 @oops_error
 def calculate_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
     message = update.message
     if message.text == "/cancel":
-        return START
+        return cancel(bot, update)
     print_log("Calculate:", message.text, message.from_user)
     text = message.text.strip()
     for i in text:

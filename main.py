@@ -9,25 +9,22 @@ def reply_md(update, *args, **kwargs):
 
 def start(bot: telegram.bot.Bot, update: telegram.update.Update):
     message = update.message
+    print_log("New user:", message.from_user)
     message.reply_text("Привет, Я — \"многофункциональный\" бот)\n%s\n\n"
                        "P.S.: Если бот перестал реагировать, попробуйте прописать комманду /start. "
                        "Возможно, бота просто перезагружали.\n\n%s" % (functions_str, QUESTION_STRING),
                        reply_markup=start_keyboard)
-    return 0
-
-
-def cancel(bot: telegram.bot.Bot, update: telegram.update.Update):
-    message = update.message
-    message.reply_text(functions_str, reply_markup=start_keyboard)
     return START
 
 
 @oops_error
 def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_data: dict):
     message = update.message
+
     text = message.text.strip()
     if text in functions:
         index = functions.index(text)
+        print_log("Selected function: %s (id: %d).\n  User: %s\n" % (functions[index], index, message.from_user))
 
         if "tr" not in user_data:
             user_data['tr'] = {"from": "ru", "to": "en"}
@@ -40,8 +37,8 @@ def select_function(bot: telegram.bot.Bot, update: telegram.update.Update, user_
 
         if text in ANSWERS:
             t = ANSWERS[text](update)
-            # print_log(t)
-            return t
+            print_log(t)
+            return START
 
         annotation = "\nПримечание: %s\n" % ANNOTATION[function_index] if function_index in ANNOTATION else ""
         markup = keyboard_dict[function_index] if function_index in keyboard_dict else remove_kb
