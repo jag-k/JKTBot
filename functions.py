@@ -217,13 +217,13 @@ def get_timetable(bot: telegram.bot.Bot, update: telegram.update.Update, user_da
 
 @oops_error
 def about(bot: telegram.bot.Bot, update: telegram.update.Update):
-    message: telegram.message.Message = update.message
+    message = update.message
     message.reply_text(ABOUT_STRING, reply_markup=start_keyboard)
 
 
 @oops_error
 def help_func(bot: telegram.bot.Bot, update: telegram.update.Update):
-    message: telegram.message.Message = update.message
+    message = update.message
     message.reply_text(HELP_STRING, reply_markup=start_keyboard)
 
 
