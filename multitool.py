@@ -8,11 +8,10 @@ def no_color(string):
     for i in string:
         if fill and i == '\x1b':
             fill = False
-            continue
         if not fill and i == 'm':
             fill = True
-            continue
-        res += i
+
+        res += i if fill else ''
     return res
 
 
