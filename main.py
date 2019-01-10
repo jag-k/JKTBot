@@ -13,6 +13,7 @@ def start(bot: telegram.bot.Bot, update: telegram.update.Update):
                        "P.S.: Если бот перестал реагировать, попробуйте прописать комманду /start. "
                        "Возможно, бота просто перезагружали.\n\n%s" % (functions_str, QUESTION_STRING),
                        reply_markup=start_keyboard)
+    print("Start command")
     return 0
 
 
@@ -89,6 +90,7 @@ def main():
     )
 
     dp.add_handler(conv_handler)
+    dp.add_handler(MessageHandler(Filters.all, (lambda bot, update: print("message", update.message.text))))
 
     # Запускаем цикл приема и обработки сообщений.
     print_log("Bot started…")
@@ -100,5 +102,13 @@ def main():
 
 
 if __name__ == '__main__':
-    updater = Updater(open("api_keys/api_key").read())
+    updater = Updater(open("api_keys/api_key").read(), request_kwargs={
+        'proxy_url': 'socks5://35.185.64.205:1080/',
+        # 'proxy_url': 'https://162.243.162.54:80',
+        # Optional, if you need authentication:
+        # 'urllib3_proxy_kwargs': {
+        #     'username': 'PROXY_USER',
+        #     'password': 'PROXY_PASS',
+        # }
+    })
     main()

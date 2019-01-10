@@ -12,7 +12,8 @@ def no_color(string):
         if not fill and i == 'm':
             fill = True
             continue
-        res += i
+        if fill:
+            res += i
     return res
 
 
